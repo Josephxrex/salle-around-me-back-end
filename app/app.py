@@ -10,12 +10,10 @@ db = SQLAlchemy(app)
 
 # Importar las rutas de usuario
 from routes.user import user_bp
-from routes.coordinates import coordinate_bp
 
 # Registrar las rutas de usuario
 app.register_blueprint(user_bp, url_prefix='/user')
-# Registrar las rutas de usuario
-app.register_blueprint(coordinate_bp, url_prefix='/coordinate')
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
