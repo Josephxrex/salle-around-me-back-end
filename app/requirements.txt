@@ -4,3 +4,4 @@ python-decouple
 SQLAlchemy
 mysqlclient
 gunicorn
+python-dotenv
