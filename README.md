@@ -16,6 +16,7 @@ SalleAroundMe Back-End is an API that serves as the backbone for the SalleAround
 │ └── app.py
 ├── README.md
 
+```
 ## Setting Up the Project
 
 Before running the project, follow these steps to set up your development environment:
@@ -27,6 +28,7 @@ python -m venv venv
 
 # On macOS and Linux
 python3 -m venv venv
+```
 
 ## Setting Up the Project
 
@@ -37,19 +39,19 @@ python3 -m venv venv
 venv\Scripts\activate
 
 source venv/bin/activate
-
+```
 ### 3. Install Required Packages
 
 While the virtual environment is active, install the project's dependencies using pip:
 
 ```bash
 pip install -r requirements.txt
-
+```
 ## Running the Project
 
 To run the Flask application, execute the following command in your terminal from the project's root directory:
 
 ```bash
 flask run 
-
+```
 After running the command, Flask will start, and your application will be available at http://127.0.0.1:5000/ by default. You can access your Flask application in a web browser by entering that address in the URL bar.
