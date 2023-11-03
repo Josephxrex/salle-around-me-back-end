@@ -90,7 +90,6 @@ def get_detail_attraction():
 
     except Exception as e:
         return jsonify({'error': 'Error al obtener los detalles de atracción: ' + str(e)}), 400
-    
 
 # Método para editar el detalle de atraccion
 """
