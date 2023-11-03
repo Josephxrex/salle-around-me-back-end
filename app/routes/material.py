@@ -1,0 +1,92 @@
+from flask import Blueprint, request, jsonify
+from models.material import Material
+from app import db
+
+material_bp = Blueprint('material', __name__)
+
+
+@material_bp.route('/', methods=['POST'])
+def create_material():
+    try:
+        data = request.get_json()
+        name = data.get('name')
+
+        new_material = Material(name=name)
+
+        db.session.add(new_material)
+        db.session.commit()
+
+        return jsonify({'message': 'Material creado exitosamente'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Error al crear material: ' + str(e)}), 500
+
+
+@material_bp.route('/', methods=['GET'])
+def get_materials():
+    try:
+        materials = Material.query.all()
+        materials_list = []
+
+        for material in materials:
+            material_data = {
+                'id': material.id,
+                'name': material.name
+            }
+            materials_list.append(material_data)
+
+        return jsonify(materials_list)
+
+    except Exception as e:
+        return jsonify({'error': 'Error al listar los materiales: ' + str(e)}), 500
+
+
+@material_bp.route('/<int:id>', methods=['GET'])
+def get_material(id):
+    try:
+        material = Material.query.get(id)
+
+        if material:
+            return jsonify({'name': material.name})
+        else:
+            return jsonify({'message': 'Material no encontrado'}), 404
+
+    except Exception as e:
+        return jsonify({'error': 'Error al obtener material: ' + str(e)}), 500
+
+
+@material_bp.route('/<int:id>', methods=['PUT'])
+def update_material(id):
+    try:
+        material = Material.query.get(id)
+
+        if material:
+            data = request.get_json()
+            material.name = data.get('name')
+
+            db.session.commit()
+
+            return jsonify({'message': 'Material actualizado exitosamente'}), 200
+        else:
+            return jsonify({'message': 'Material no encontrado'}), 404
+
+    except Exception as e:
+        return jsonify({'error': 'Error al actualizar material: ' + str(e)}), 500
+
+
+@material_bp.route('/<int:id>', methods=['DELETE'])
+def delete_material(id):
+    try:
+        material = Material.query.get(id)
+
+        if material:
+            db.session.delete(material)
+            db.session.commit()
+
+            return jsonify({'message': 'Material eliminado exitosamente'})
+        else:
+            return jsonify({'message': 'Material no encontrado'}), 404
+
+    except Exception as e:
+        return jsonify({'error': 'Error al eliminar material: ' + str(e)}), 500
