@@ -17,6 +17,7 @@ db = SQLAlchemy(app)
 
 # Importa las rutas de usuario
 from routes.user import user_bp
+from routes.category import category_bp
 
 # Importa la ruta de style
 from routes.style import style_bp
@@ -41,6 +42,9 @@ app.register_blueprint(author_bp, url_prefix='/author')
 app.register_blueprint(tecnique_bp, url_prefix='/tecnique')
 app.register_blueprint(material_bp, url_prefix='/material')
 app.register_blueprint(attraction_bp, url_prefix='/attraction')
+app.register_blueprint(category_bp, url_prefix='/category')
+
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
