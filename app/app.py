@@ -5,7 +5,10 @@ from decouple import config
 
 app = Flask(__name__)
 
+
 app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
+SECRET_KEY = config('SECRET_KEY')
+
 db = SQLAlchemy(app)
 
 # Importar las rutas de usuario
