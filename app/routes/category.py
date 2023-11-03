@@ -15,7 +15,7 @@ def get_categories():
             category_data = {
                 'id': category.id,
                 'name': category.name,
-                'description': category.name
+                'description': category.description
             }
             categories_list.append(category_data)
 
@@ -49,7 +49,7 @@ def get_category(id):
         category = Category.query.get(id)
 
         if category:
-            return jsonify({'name': category.name, 'description': category.name})
+            return jsonify({'name': category.name, 'description': category.description})
         else:
             return jsonify({'message': 'Categoría no encontrada'}), 404
 
