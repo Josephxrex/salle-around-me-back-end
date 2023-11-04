@@ -1,11 +1,8 @@
 from flask import Blueprint, request, jsonify
 from models.coordinates import Coordinates
 from app import db
-from decouple import config
-import jwt
 
 coordinate_bp = Blueprint('coordinate', __name__)
-SECRET_KEY = config("SECRET_KEY")
 
 from middleware.middleware import jwt_required
 #Métodos para la API de coordenadas

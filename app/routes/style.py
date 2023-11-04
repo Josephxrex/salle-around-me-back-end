@@ -1,11 +1,8 @@
 from flask import Blueprint, request, jsonify
 from models.style import Style
 from app import db
-from decouple import config
-import jwt
 
 style_bp = Blueprint('style', __name__)
-SECRET_KEY = config('SECRET_KEY')
 
 from middleware.middleware import jwt_required
 

@@ -1,11 +1,8 @@
 from flask import Blueprint, request, jsonify
 from models.detail_attraction import detail_attraction
 from app import db
-from decouple import config
-import jwt
 
 detail_attraction_bp = Blueprint('detail_attraction', __name__)
-SECRET_KEY = config('SECRET_KEY')
 
 from middleware.middleware import jwt_required
 
