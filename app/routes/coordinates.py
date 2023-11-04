@@ -1,9 +1,13 @@
 from flask import Blueprint, request, jsonify
 from models.coordinates import Coordinates
 from app import db
+from decouple import config
+import jwt
 
 coordinate_bp = Blueprint('coordinate', __name__)
+SECRET_KEY = config("SECRET_KEY")
 
+from middleware.middleware import jwt_required
 #Métodos para la API de coordenadas
 """
     Autor: Josue Meza Lozano
@@ -12,7 +16,8 @@ coordinate_bp = Blueprint('coordinate', __name__)
     """
 #Se crea una nueva coordenada
 @coordinate_bp.route('/', methods=['POST'])
-def create_coordinate():
+@jwt_required
+def create_coordinate(data):
     try:
       #Se obtienen los datos de la petición
       data = request.get_json()
@@ -44,7 +49,8 @@ def create_coordinate():
     """
 #Se obtienen todas las coordenadas
 @coordinate_bp.route('/', methods=['GET'])
-def get_coordinates():
+@jwt_required
+def get_coordinates(data):
     try:
       #Se obtienen todas las coordenadas de la base de datos
       coordinates = Coordinates.query.all()
@@ -71,7 +77,8 @@ def get_coordinates():
     """
 #Se obtiene una coordenada por su id
 @coordinate_bp.route('/<int:id>', methods=['GET'])
-def get_coordinate(id):
+@jwt_required
+def get_coordinate(data, id):
     try:
       #Se obtiene la coordenada de la base de datos por su id
       coordinate = Coordinates.query.get(id)
@@ -96,7 +103,8 @@ def get_coordinate(id):
     """
 #Se actualiza una coordenada por su id
 @coordinate_bp.route('/<int:id>', methods=['PUT'])
-def update_coordinate(id):
+@jwt_required
+def update_coordinate(data, id):
     try:
       #se obtiene la coordenada de la base de datos por su id
       coordinate = Coordinates.query.get(id)
@@ -126,7 +134,8 @@ def update_coordinate(id):
     """
 #Se elimina una coordenada por su id
 @coordinate_bp.route('/<int:id>', methods=['DELETE'])
-def delete_coordinate(id):
+@jwt_required
+def delete_coordinate(data, id):
     try:
       #Se obtiene la coordenada de la base de datos por su id
       coordinate = Coordinates.query.get(id)

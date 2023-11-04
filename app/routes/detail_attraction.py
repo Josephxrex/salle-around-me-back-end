@@ -1,8 +1,13 @@
 from flask import Blueprint, request, jsonify
 from models.detail_attraction import detail_attraction
 from app import db
+from decouple import config
+import jwt
 
 detail_attraction_bp = Blueprint('detail_attraction', __name__)
+SECRET_KEY = config('SECRET_KEY')
+
+from middleware.middleware import jwt_required
 
 # Método para crear un datalle de atraccion 
 """
@@ -15,7 +20,8 @@ detail_attraction_bp = Blueprint('detail_attraction', __name__)
     - 400 (Bad Request) si ocurre algún error durante la creación.
 """
 @detail_attraction_bp.route('/', methods=['POST'])
-def create_detail_attraction():
+@jwt_required
+def create_detail_attraction(data):
     try:
         # Obtener los datos JSON de la solicitud
         data = request.get_json()
@@ -52,7 +58,45 @@ def create_detail_attraction():
         db.session.rollback()
         # Devolver un mensaje de error en caso de excepción
         return jsonify({'error': 'Error al crear el detalle de atracción: ' + str(e)}), 400
+    
+  # Método para obtener todos los detalles de atraccion
+"""
+    Autor: Laura Pérez
+    Descripción: Obtiene los detalles de un atracción.
+    Fecha: 2023-10-31
 
+    Return:
+    - 200 (OK) y los datos del detalle si se encuentra.
+    - 404 (Not Found) si el detalle no existe.
+    - 400 (Bad Request) si ocurre algún error durante la obtención.
+    """
+@detail_attraction_bp.route('/<int:id>', methods=['GET'])
+@jwt_required
+def get_detail_attractionbyid(data, id):
+    try:
+        detail = detail_attraction.query.get(id)
+        
+        if detail:
+            # Convierte cada objeto detail_attraction a un diccionario y agrega a la lista
+            detail_data = {
+                'id': detail.id,
+                'description': detail.description,
+                'size': detail.size,
+                'tecnique_id': detail.tecnique_id,
+                'material_id': detail.material_id,
+                'style_id': detail.style_id,
+                'city_id': detail.city_id,
+                'country_id': detail.country_id,
+                'address_id': detail.address_id
+            }
+        
+            return jsonify(detail_data)
+            #Si no existe, se retorna un mensaje de error 404
+        else:
+            return jsonify({'message': 'Coordenada no encontrada'}), 404
+
+    except Exception as e:
+        return jsonify({'error': 'Error al obtener el detalle de atraccion: ' + str(e)}), 400
 
   # Método para obtener todos los detalles de atraccion
 """
@@ -66,7 +110,8 @@ def create_detail_attraction():
     - 400 (Bad Request) si ocurre algún error durante la obtención.
     """
 @detail_attraction_bp.route('/', methods=['GET'])
-def get_detail_attraction():
+@jwt_required
+def get_detail_attraction(data):
     try:
         details = detail_attraction.query.all()
         detail_list = []
@@ -103,7 +148,8 @@ def get_detail_attraction():
     - 400 (Bad Request) si ocurre algún error durante la actualización.
     """
 @detail_attraction_bp.route('/<int:id>', methods=['PUT'])
-def update_detail_attraction(id):
+@jwt_required
+def update_detail_attraction(data, id):
     try:
         # Buscar el detalle de atracción por su ID
         detail = detail_attraction.query.get(id)
@@ -147,7 +193,8 @@ def update_detail_attraction(id):
     - 400 (Bad Request) si ocurre algún error durante la eliminación.
     """
 @detail_attraction_bp.route('/<int:id>', methods=['DELETE'])
-def delete_detail_attraction(id):
+@jwt_required
+def delete_detail_attraction(data, id):
     try:
         # Buscar el detalle de atracción por su ID
         detail = detail_attraction.query.get(id)

@@ -1,11 +1,17 @@
 from flask import Blueprint, request, jsonify
 from models.style import Style
 from app import db
+from decouple import config
+import jwt
 
 style_bp = Blueprint('style', __name__)
+SECRET_KEY = config('SECRET_KEY')
+
+from middleware.middleware import jwt_required
 
 @style_bp.route('/', methods=['POST'])
-def create_style():
+@jwt_required
+def create_style(data):
     try:
         data = request.get_json()
         name = data.get('name')
@@ -22,7 +28,8 @@ def create_style():
         return jsonify({'error': 'Error al crear el estilo: ' + str(e)}), 500
 
 @style_bp.route('/', methods=['GET'])
-def get_styles():
+@jwt_required
+def get_styles(data):
     try:
         styles = Style.query.all()
         styles_list = []
@@ -40,7 +47,8 @@ def get_styles():
         return jsonify({'error': 'Error al listar los estilos: ' + str(e)}), 500
 
 @style_bp.route('/<int:id>', methods=['GET'])
-def get_style(id):
+@jwt_required
+def get_style(data, id):
     try:
         style = Style.query.get(id)
 
@@ -53,7 +61,8 @@ def get_style(id):
         return jsonify({'error': 'Error al obtener el estilo: ' + str(e)}), 500
 
 @style_bp.route('/<int:id>', methods=['PUT'])
-def update_style(id):
+@jwt_required
+def update_style(data, id):
     try:
         style = Style.query.get(id)
 
@@ -71,7 +80,8 @@ def update_style(id):
         return jsonify({'error': 'Error al actualizar el estilo: ' + str(e)}), 500
 
 @style_bp.route('/<int:id>', methods=['DELETE'])
-def delete_style(id):
+@jwt_required
+def delete_style(data, id):
     try:
         style = Style.query.get(id)
 

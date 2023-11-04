@@ -5,7 +5,7 @@ from decouple import config
 
 app = Flask(__name__)
 
-
+app.json.sort_keys = False
 app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
 SECRET_KEY = config('SECRET_KEY')
 
