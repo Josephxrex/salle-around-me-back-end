@@ -4,8 +4,10 @@ from app import db
 
 tecnique_bp = Blueprint('tecnique', __name__)
 
+from middleware.middleware import jwt_required
 
 @tecnique_bp.route('/', methods=['POST'])
+@jwt_required
 def create_tecnique():
     try:
         data = request.get_json()
@@ -24,6 +26,7 @@ def create_tecnique():
 
 
 @tecnique_bp.route('/', methods=['GET'])
+@jwt_required
 def get_tecniques():
     try:
         tecniques = Tecnique.query.all()
@@ -43,6 +46,7 @@ def get_tecniques():
 
 
 @tecnique_bp.route('/<int:id>', methods=['GET'])
+@jwt_required
 def get_tecnique(id):
     try:
         tecnique = Tecnique.query.get(id)
@@ -57,6 +61,7 @@ def get_tecnique(id):
 
 
 @tecnique_bp.route('/<int:id>', methods=['PUT'])
+@jwt_required
 def update_tecnique(id):
     try:
         tecnique = Tecnique.query.get(id)
@@ -76,6 +81,7 @@ def update_tecnique(id):
 
 
 @tecnique_bp.route('/<int:id>', methods=['DELETE'])
+@jwt_required
 def delete_tecnique(id):
     try:
         tecnique = Tecnique.query.get(id)

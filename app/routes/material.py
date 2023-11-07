@@ -4,8 +4,10 @@ from app import db
 
 material_bp = Blueprint('material', __name__)
 
+from middleware.middleware import jwt_required
 
 @material_bp.route('/', methods=['POST'])
+@jwt_required
 def create_material():
     try:
         data = request.get_json()
@@ -24,6 +26,7 @@ def create_material():
 
 
 @material_bp.route('/', methods=['GET'])
+@jwt_required
 def get_materials():
     try:
         materials = Material.query.all()
@@ -43,6 +46,7 @@ def get_materials():
 
 
 @material_bp.route('/<int:id>', methods=['GET'])
+@jwt_required
 def get_material(id):
     try:
         material = Material.query.get(id)
@@ -57,6 +61,7 @@ def get_material(id):
 
 
 @material_bp.route('/<int:id>', methods=['PUT'])
+@jwt_required
 def update_material(id):
     try:
         material = Material.query.get(id)
@@ -76,6 +81,7 @@ def update_material(id):
 
 
 @material_bp.route('/<int:id>', methods=['DELETE'])
+@jwt_required
 def delete_material(id):
     try:
         material = Material.query.get(id)

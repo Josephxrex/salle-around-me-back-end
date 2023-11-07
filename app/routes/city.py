@@ -4,8 +4,10 @@ from app import db
 
 city_bp = Blueprint('city', __name__)
 
+from middleware.middleware import jwt_required
 
 @city_bp.route('/', methods=['POST'])
+@jwt_required
 def create_city():
     try:
         data = request.get_json()
@@ -24,6 +26,7 @@ def create_city():
 
 
 @city_bp.route('/', methods=['GET'])
+@jwt_required
 def get_citys():
     try:
         citys = City.query.all()
@@ -43,6 +46,7 @@ def get_citys():
 
 
 @city_bp.route('/<int:id>', methods=['GET'])
+@jwt_required
 def get_city(id):
     try:
         city = City.query.get(id)
@@ -57,6 +61,7 @@ def get_city(id):
 
 
 @city_bp.route('/<int:id>', methods=['PUT'])
+@jwt_required
 def update_city(id):
     try:
         city = City.query.get(id)
@@ -76,6 +81,7 @@ def update_city(id):
 
 
 @city_bp.route('/<int:id>', methods=['DELETE'])
+@jwt_required
 def delete_city(id):
     try:
         city = City.query.get(id)
