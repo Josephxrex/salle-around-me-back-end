@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models.mac_address import Mac_address
+from models.mac_address import Mac_Address
 from app import db
 
 mac_address_bp = Blueprint('mac_address', __name__)
@@ -13,7 +13,7 @@ def create_mac_address():
         data = request.get_json()
         mac_address = data.get('mac_address')
 
-        new_mac_address = Mac_address(mac_address=mac_address)
+        new_mac_address = Mac_Address(mac_address=mac_address)
 
         db.session.add(new_mac_address)
         db.session.commit()
@@ -29,7 +29,7 @@ def create_mac_address():
 @jwt_required
 def get_mac_address():
     try:
-        mac_address = Mac_address.query.all()
+        mac_address = Mac_Address.query.all()
         mac_address_list = []
 
         for mac_address in mac_address:
@@ -49,7 +49,7 @@ def get_mac_address():
 @jwt_required
 def get_mac_address(id):
     try:
-        mac_address = Mac_address.query.get(id)
+        mac_address = Mac_Address.query.get(id)
 
         if mac_address:
             return jsonify({'mac_address': mac_address.mac_address})
@@ -64,7 +64,7 @@ def get_mac_address(id):
 @jwt_required
 def update_mac_address(id):
     try:
-        mac_address = Mac_address.query.get(id)
+        mac_address = Mac_Address.query.get(id)
 
         if mac_address:
             data = request.get_json()
@@ -84,7 +84,7 @@ def update_mac_address(id):
 @jwt_required
 def delete_mac_address(id):
     try:
-        mac_address = Mac_address.query.get(id)
+        mac_address = Mac_Address.query.get(id)
 
         if mac_address:
             db.session.delete(mac_address)
