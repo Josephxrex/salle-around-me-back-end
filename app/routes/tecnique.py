@@ -8,7 +8,7 @@ from middleware.middleware import jwt_required
 
 @tecnique_bp.route('/', methods=['POST'])
 @jwt_required
-def create_tecnique():
+def create_tecnique(data):
     try:
         data = request.get_json()
         name = data.get('name')
@@ -27,7 +27,7 @@ def create_tecnique():
 
 @tecnique_bp.route('/', methods=['GET'])
 @jwt_required
-def get_tecniques():
+def get_tecniques(data):
     try:
         tecniques = Tecnique.query.all()
         tecniques_list = []
@@ -47,7 +47,7 @@ def get_tecniques():
 
 @tecnique_bp.route('/<int:id>', methods=['GET'])
 @jwt_required
-def get_tecnique(id):
+def get_tecnique(data, id):
     try:
         tecnique = Tecnique.query.get(id)
 
@@ -62,7 +62,7 @@ def get_tecnique(id):
 
 @tecnique_bp.route('/<int:id>', methods=['PUT'])
 @jwt_required
-def update_tecnique(id):
+def update_tecnique(data, id):
     try:
         tecnique = Tecnique.query.get(id)
 
@@ -82,7 +82,7 @@ def update_tecnique(id):
 
 @tecnique_bp.route('/<int:id>', methods=['DELETE'])
 @jwt_required
-def delete_tecnique(id):
+def delete_tecnique(data, id):
     try:
         tecnique = Tecnique.query.get(id)
 

@@ -8,7 +8,7 @@ from middleware.middleware import jwt_required
 
 @material_bp.route('/', methods=['POST'])
 @jwt_required
-def create_material():
+def create_material(data):
     try:
         data = request.get_json()
         name = data.get('name')
@@ -27,7 +27,7 @@ def create_material():
 
 @material_bp.route('/', methods=['GET'])
 @jwt_required
-def get_materials():
+def get_materials(data):
     try:
         materials = Material.query.all()
         materials_list = []
@@ -47,7 +47,7 @@ def get_materials():
 
 @material_bp.route('/<int:id>', methods=['GET'])
 @jwt_required
-def get_material(id):
+def get_material(data, id):
     try:
         material = Material.query.get(id)
 
@@ -62,7 +62,7 @@ def get_material(id):
 
 @material_bp.route('/<int:id>', methods=['PUT'])
 @jwt_required
-def update_material(id):
+def update_material(data, id):
     try:
         material = Material.query.get(id)
 
@@ -82,7 +82,7 @@ def update_material(id):
 
 @material_bp.route('/<int:id>', methods=['DELETE'])
 @jwt_required
-def delete_material(id):
+def delete_material(data, id):
     try:
         material = Material.query.get(id)
 
