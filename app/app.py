@@ -10,7 +10,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
 SECRET_KEY = config('SECRET_KEY')
 
 db = SQLAlchemy(app)
-app.json.sort_keys = False
 # Importar las rutas de usuario
 from routes.user import user_bp
 #Importar la ruta de detalle 

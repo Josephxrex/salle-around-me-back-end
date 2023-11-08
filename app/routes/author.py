@@ -1,21 +1,23 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request
 from models.author import Author
+from middleware.middleware import jwt_required
 from app import db
 
 author_bp = Blueprint("author", __name__)
 
 
 @author_bp.route("/", methods=["POST"])
-def create_author():
+@jwt_required
+def create_author(data):
     try:
-        data = request.get_json()
+        dataJson = request.get_json()
 
-        name = data.get("name")
-        lastname = data.get("lastname")
-        birthday = data.get("birthday")
-        death = data.get("death")
-        description = data.get("description")
-        img = data.get("img")
+        name = dataJson.get("name")
+        lastname = dataJson.get("lastname")
+        birthday = dataJson.get("birthday")
+        death = dataJson.get("death")
+        description = dataJson.get("description")
+        img = dataJson.get("img")
 
         new_author = Author(
             name=name,
@@ -37,7 +39,8 @@ def create_author():
 
 
 @author_bp.route("/", methods=["GET"])
-def get_authors():
+@jwt_required
+def get_authors(data):
     try:
         authors = Author.query.all()
         authors_list = []
@@ -61,7 +64,8 @@ def get_authors():
 
 
 @author_bp.route("/<int:id>", methods=["GET"])
-def get_author(id):
+@jwt_required
+def get_author(data, id):
     try:
         author = Author.query.get(id)
 
@@ -84,19 +88,20 @@ def get_author(id):
 
 
 @author_bp.route("/<int:id>", methods=["PUT"])
-def update_author(id):
+@jwt_required
+def update_author(data, id):
     try:
         author = Author.query.get(id)
 
         if author:
-            data = request.get_json()
+            dataJson = request.get_json()
 
-            author.name = data.get("name")
-            author.lastname = data.get("lastname")
-            author.birthday = data.get("birthday")
-            author.death = data.get("death")
-            author.description = data.get("description")
-            author.img = data.get("img")
+            author.name = dataJson.get("name")
+            author.lastname = dataJson.get("lastname")
+            author.birthday = dataJson.get("birthday")
+            author.death = dataJson.get("death")
+            author.description = dataJson.get("description")
+            author.img = dataJson.get("img")
 
             db.session.commit()
 
@@ -109,7 +114,8 @@ def update_author(id):
 
 
 @author_bp.route("/<int:id>", methods=["DELETE"])
-def delete_author(id):
+@jwt_required
+def delete_author(data, id):
     try:
         author = Author.query.get(id)
 
