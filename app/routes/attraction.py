@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint,  jsonify #request,
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.user import User
 from app import db
@@ -18,9 +18,9 @@ from middleware.middleware import jwt_required
 # Método para crear una atracción
 @attraction_bp.route('/', methods=['POST'])
 #@jwt_required
-def create_attraction():
+def create_attraction(data):
     try:
-        data = request.get_json()
+        data = data.get_json()
         name = data['name']
         img = data['img']
         id_detail = data['id_detail']
@@ -42,7 +42,7 @@ def create_attraction():
 # Método para obtener todas las atracciones
 @attraction_bp.route('/', methods=['GET'])
 #@jwt_required
-def get_attractions():
+def get_attractions(data):
     try:
         attractions = Attraction.query.all()
         return jsonify([{'id': attraction.id, 'name': attraction.name, 'img': attraction.img,
@@ -56,7 +56,7 @@ def get_attractions():
 # Método para obtener una atracción por su id
 @attraction_bp.route('/<int:id>', methods=['GET'])
 #@jwt_required
-def get_attraction(id):
+def get_attraction(data,id):
     try:
         attraction = Attraction.query.get(id)
         if attraction:
@@ -72,11 +72,11 @@ def get_attraction(id):
 # Método para actualizar una atracción por su id
 @attraction_bp.route('/<int:id>', methods=['PUT'])
 #@jwt_required
-def update_attraction(id):
+def update_attraction(data,id):
     try:
         attraction = Attraction.query.get(id)
         if attraction:
-            data = request.get_json()
+            data = data.get_json()
             attraction.name = data.get('name', attraction.name)
             attraction.img = data.get('img', attraction.img)
             attraction.id_detail = data.get('id_detail', attraction.id_detail)
@@ -95,7 +95,7 @@ def update_attraction(id):
 # Método para eliminar una atracción por su id
 @attraction_bp.route('/<int:id>', methods=['DELETE'])
 #@jwt_required
-def delete_attraction(id):
+def delete_attraction(data,id):
     try:
         attraction = Attraction.query.get(id)
         if attraction:
