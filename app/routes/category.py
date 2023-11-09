@@ -4,9 +4,11 @@ from app import db
 
 category_bp = Blueprint('category', __name__)
 
+from middleware.middleware import jwt_required
     
 @category_bp.route('/', methods=['GET'])
-def get_categories():
+@jwt_required
+def get_categories(data):
     try:
         categories = Category.query.all()
         categories_list = []
@@ -25,7 +27,8 @@ def get_categories():
         return jsonify({'error': 'Error al listar las categorias: ' + str(e)}), 500
     
 @category_bp.route('/', methods=['POST'])
-def create_category():
+@jwt_required
+def create_category(data):
     try:
         data = request.get_json()
         
@@ -44,7 +47,8 @@ def create_category():
         return jsonify({'error': 'Error al crear la Categoría: ' + str(e)}), 500
     
 @category_bp.route('/<int:id>', methods=['GET'])
-def get_category(id):
+@jwt_required
+def get_category(data,id):
     try:
         category = Category.query.get(id)
 
@@ -57,7 +61,8 @@ def get_category(id):
         return jsonify({'error': 'Error al obtener la Categoría: ' + str(e)}), 500
     
 @category_bp.route('/<int:id>', methods=['PUT'])
-def update_category(id):
+@jwt_required
+def update_category(data, id):
     try:
         category = Category.query.get(id)
 
@@ -76,7 +81,8 @@ def update_category(id):
         return jsonify({'error': 'Error al actualizar la Categoría: ' + str(e)}), 500
     
 @category_bp.route('/<int:id>', methods=['DELETE'])
-def delete_category(id):
+@jwt_required
+def delete_category(data, id):
     try:
         category = Category.query.get(id)
 
