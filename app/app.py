@@ -10,7 +10,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
 SECRET_KEY = config('SECRET_KEY')
 
 db = SQLAlchemy(app)
-
 # Importar las rutas de usuario
 from routes.user import user_bp
 #Importar la ruta de detalle 
@@ -19,6 +18,7 @@ from routes.detail_attraction import detail_attraction_bp
 from routes.coordinates import coordinate_bp
 #Importar la ruta de style
 from routes.style import style_bp
+from routes.author import author_bp
 #Importar la ruta de tecnique
 from routes.tecnique import tecnique_bp
 #Importar la ruta de material
@@ -31,6 +31,7 @@ app.register_blueprint(user_bp, url_prefix='/user')
 app.register_blueprint(detail_attraction_bp, url_prefix='/detail_attraction')
 app.register_blueprint(coordinate_bp, url_prefix='/coordinate')
 app.register_blueprint(style_bp, url_prefix='/style')
+app.register_blueprint(author_bp, url_prefix='/author')
 app.register_blueprint(tecnique_bp, url_prefix='/tecnique')
 app.register_blueprint(material_bp, url_prefix='/material')
 app.register_blueprint(city_bp, url_prefix='/city')
