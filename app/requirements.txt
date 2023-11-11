@@ -6,3 +6,5 @@ mysqlclient
 gunicorn
 python-dotenv
 PyJWT
+flasgger
+markupsafe
