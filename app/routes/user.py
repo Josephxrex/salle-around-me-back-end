@@ -14,6 +14,47 @@ from middleware.middleware import jwt_required
 @user_bp.route('/', methods=['POST'])
 @jwt_required
 def registro(data):
+    """
+    Registrar un Nuevo Usuario
+    ---
+    parameters:
+      - name: data
+        in: body
+        required: true
+        description: Datos del usuario a registrar.
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Nombre del usuario.
+            password:
+              type: string
+              description: Contraseña del usuario.
+            email:
+              type: string
+              description: Correo electrónico del usuario.
+
+    responses:
+      200:
+        description: Usuario registrado exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de éxito.
+
+      401:
+        description: Acceso no autorizado.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de error.
+
+    """
     data = request.get_json()
     name = data['name']
     password = data['password']
@@ -31,6 +72,51 @@ def registro(data):
 @user_bp.route('/<int:user_id>', methods=['PUT'])
 @jwt_required
 def update_user(data, user_id):
+    """
+    Actualizar Datos de Usuario
+    ---
+    parameters:
+      - name: user_id
+        in: path
+        type: integer
+        required: true
+        description: ID del usuario a actualizar.
+
+    responses:
+      200:
+        description: Actualización exitosa.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de éxito.
+            user_id:
+              type: integer
+              description: ID del usuario actualizado.
+            name:
+              type: string
+              description: Nuevo nombre del usuario.
+
+      401:
+        description: Acceso no autorizado.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de error.
+
+      404:
+        description: Usuario no encontrado.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de error.
+
+    """
     new_data = request.get_json()
 
     # Verifica si el usuario existe
@@ -75,6 +161,53 @@ def update_user(data, user_id):
 
 @user_bp.route('/login', methods=['POST'])
 def login():
+    """
+    Iniciar Sesión de Usuario
+    ---
+    parameters:
+      - name: data
+        in: body
+        required: true
+        description: Credenciales de inicio de sesión.
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+              description: Correo electrónico del usuario.
+            password:
+              type: string
+              description: Contraseña del usuario.
+
+    responses:
+      200:
+        description: Inicio de sesión exitoso.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de éxito.
+            user_id:
+              type: integer
+              description: ID del usuario.
+            name:
+              type: string
+              description: Nombre del usuario.
+            token:
+              type: string
+              description: Token JWT de autenticación.
+
+      401:
+        description: Credenciales inválidas.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de error.
+
+    """
     data = request.get_json()
     email = data['email']
     password = data['password']
@@ -88,7 +221,54 @@ def login():
     else:
         return jsonify({'message': 'Credenciales inválidas'})
 
+@user_bp.route('/', methods=['GET'])
+@jwt_required
+def list_users(data):
+    """
+    Listar todos los usuarios
+    ---
+    responses:
+      200:
+        description: Lista de usuarios.
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              user_id:
+                type: integer
+                description: ID del usuario.
+              name:
+                type: string
+                description: Nombre del usuario.
+              email:
+                type: string
+                description: Correo electrónico del usuario.
+      401:
+        description: Acceso no autorizado.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de error.
+    """
+    # Obtiene todos los usuarios de la base de datos
+    users = User.query.all()
+
+    # Crea una lista de diccionarios con la información de cada usuario
+    user_list = []
+    for user in users:
+        user_info = {
+            'user_id': user.id,
+            'name': user.name,
+            'email': user.email
+        }
+        user_list.append(user_info)
+
+    return jsonify(user_list)
+
 def generate_token(email):
     payload = {'email': email}
-    token = jwt.encode(payload, SECRET_KEY , algorithm='HS256')  
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
     return token
