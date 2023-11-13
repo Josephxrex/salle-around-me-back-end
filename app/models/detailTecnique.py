@@ -1,6 +1,7 @@
 from app import db
 
-class Style(db.Model):
+class DetailTecnique(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60))
+    tecnique_id = db.Column(db.Integer)
+    attraction_id = db.Column(db.Integer)
     is_delete = db.Column(db.Boolean, default=False)
