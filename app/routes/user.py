@@ -2,16 +2,16 @@ from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.user import User
 from app import db
-from decouple import config 
+from decouple import config
 import jwt
 
-user_bp = Blueprint('user', __name__)
-SECRET_KEY = config('SECRET_KEY')
+user_bp = Blueprint("user", __name__)
+SECRET_KEY = config("SECRET_KEY")
 
 from middleware.middleware import jwt_required
 
 
-@user_bp.route('/', methods=['POST'])
+@user_bp.route("/", methods=["POST"])
 @jwt_required
 def registro(data):
     """
@@ -56,20 +56,21 @@ def registro(data):
 
     """
     data = request.get_json()
-    name = data['name']
-    password = data['password']
-    email = data['email']
+    name = data["name"]
+    password = data["password"]
+    email = data["email"]
 
     # Hashea la contraseña antes de almacenarla en la base de datos con el método 'pbkdf2:sha256'
-    hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+    hashed_password = generate_password_hash(password, method="pbkdf2:sha256")
 
     new_user = User(name=name, password=hashed_password, email=email)
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': 'Usuario registrado exitosamente'})
+    return jsonify({"message": "Usuario registrado exitosamente"})
 
-@user_bp.route('/<int:user_id>', methods=['PUT'])
+
+@user_bp.route("/<int:user_id>", methods=["PUT"])
 @jwt_required
 def update_user(data, user_id):
     """
@@ -123,43 +124,48 @@ def update_user(data, user_id):
     user = User.query.filter_by(id=user_id).first()
 
     if not user:
-        return jsonify({'message': 'Usuario no encontrado'}), 404
+        return jsonify({"message": "Usuario no encontrado"}), 404
 
     # Actualiza la información del usuario
-    if 'name' in new_data:
-        user.name = new_data['name']
-    if 'password' in new_data:
-        hashed_password = generate_password_hash(new_data['password'], method='pbkdf2:sha256')
+    if "name" in new_data:
+        user.name = new_data["name"]
+    if "password" in new_data:
+        hashed_password = generate_password_hash(
+            new_data["password"], method="pbkdf2:sha256"
+        )
         user.password = hashed_password
-    if 'email' in new_data:
-        user.email = new_data['email']
+    if "email" in new_data:
+        user.email = new_data["email"]
 
     db.session.commit()
 
-    return jsonify({'message': 'Información del usuario actualizada exitosamente'})
-    user_id = data['user_id']  # Obtiene el ID del usuario del token JWT
+    return jsonify({"message": "Información del usuario actualizada exitosamente"})
+    user_id = data["user_id"]  # Obtiene el ID del usuario del token JWT
     new_data = request.get_json()
 
     # Verifica si el usuario existe
     user = User.query.filter_by(id=user_id).first()
 
     if not user:
-        return jsonify({'message': 'Usuario no encontrado'}), 404
+        return jsonify({"message": "Usuario no encontrado"}), 404
 
     # Actualiza la información del usuario
-    if 'name' in new_data:
-        user.name = new_data['name']
-    if 'password' in new_data:
-        hashed_password = generate_password_hash(new_data['password'], method='pbkdf2:sha256')
+    if "name" in new_data:
+        user.name = new_data["name"]
+    if "password" in new_data:
+        hashed_password = generate_password_hash(
+            new_data["password"], method="pbkdf2:sha256"
+        )
         user.password = hashed_password
-    if 'email' in new_data:
-        user.email = new_data['email']
+    if "email" in new_data:
+        user.email = new_data["email"]
 
     db.session.commit()
-    
-    return jsonify({'message': 'Información del usuario actualizada exitosamente'})
 
-@user_bp.route('/login', methods=['POST'])
+    return jsonify({"message": "Información del usuario actualizada exitosamente"})
+
+
+@user_bp.route("/login", methods=["POST"])
 def login():
     """
     Iniciar Sesión de Usuario
@@ -209,19 +215,27 @@ def login():
 
     """
     data = request.get_json()
-    email = data['email']
-    password = data['password']
+    email = data["email"]
+    password = data["password"]
 
     user = User.query.filter_by(email=email).first()
 
     if user and check_password_hash(user.password, password):
         # Genera un nuevo token JWT con el correo del usuario al iniciar sesión
         token = generate_token(email)
-        return jsonify({'message': 'Inicio de sesión exitoso', 'user_id': user.id, 'name': user.name, 'token': token})
+        return jsonify(
+            {
+                "message": "Inicio de sesión exitoso",
+                "user_id": user.id,
+                "name": user.name,
+                "token": token,
+            }
+        )
     else:
-        return jsonify({'message': 'Credenciales inválidas'})
+        return jsonify({"message": "Credenciales inválidas"})
 
-@user_bp.route('/', methods=['GET'])
+
+@user_bp.route("/", methods=["GET"])
 @jwt_required
 def list_users(data):
     """
@@ -259,16 +273,67 @@ def list_users(data):
     # Crea una lista de diccionarios con la información de cada usuario
     user_list = []
     for user in users:
-        user_info = {
-            'user_id': user.id,
-            'name': user.name,
-            'email': user.email
-        }
+        user_info = {"user_id": user.id, "name": user.name, "email": user.email}
         user_list.append(user_info)
 
     return jsonify(user_list)
 
+
+@user_bp.route("/<int:user_id>", methods=["GET"])
+@jwt_required
+def get_user_by_id(data, user_id):
+    """
+    Obtener un usuario por su ID
+    ---
+    responses:
+      200:
+        description: Información del usuario.
+        schema:
+          type: object
+          properties:
+            user_id:
+              type: integer
+              description: ID del usuario.
+            name:
+              type: string
+              description: Nombre del usuario.
+            email:
+              type: string
+              description: Correo electrónico del usuario.
+            # Agrega otros campos del usuario según tus necesidades
+      404:
+        description: Usuario no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Mensaje de error.
+      500:
+        description: Error en el servidor.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Mensaje de error."""
+    try:
+        # Obtener el usuario por su ID
+        user = User.query.get(user_id)
+
+        if user is None:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+
+        # Crear un diccionario con los datos del usuario
+        user_info = {"user_id": user.id, "name": user.name, "email": user.email}
+
+        return jsonify(user_info), 200
+
+    except Exception as e:
+        return jsonify({"error": "Error al obtener el usuario: " + str(e)}), 500
+
+
 def generate_token(email):
-    payload = {'email': email}
-    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+    payload = {"email": email}
+    token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
     return token

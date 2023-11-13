@@ -30,6 +30,9 @@ from routes.tecnique import tecnique_bp
 # Importa la ruta de material
 from routes.material import material_bp
 
+# Importa la ruta de attraction
+from routes.attraction import attraction_bp
+
 
 # Registra las rutas de usuario
 app.register_blueprint(user_bp, url_prefix='/user')
@@ -37,6 +40,7 @@ app.register_blueprint(style_bp, url_prefix='/style')
 app.register_blueprint(author_bp, url_prefix='/author')
 app.register_blueprint(tecnique_bp, url_prefix='/tecnique')
 app.register_blueprint(material_bp, url_prefix='/material')
+app.register_blueprint(attraction_bp, url_prefix='/attraction')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)

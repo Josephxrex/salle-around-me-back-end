@@ -1,7 +1,6 @@
 from app import db
 
-
-class Tecnique(db.Model):
+class MacAddress(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60))
+    address = db.Column(db.String(17), nullable=False)
     is_delete = db.Column(db.Boolean, default=False)
