@@ -6,6 +6,7 @@ from flasgger import Swagger  # Agrega la importación de Flasgger
 import os
 
 app = Flask(__name__)
+
 app.json.sort_keys = False
 app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
 SECRET_KEY = config('SECRET_KEY')
@@ -33,6 +34,9 @@ from routes.material import material_bp
 # Importa la ruta de attraction
 from routes.attraction import attraction_bp
 
+# Importa la ruta de category
+from routes.category import category_bp
+
 
 # Registra las rutas de usuario
 app.register_blueprint(user_bp, url_prefix='/user')
@@ -41,6 +45,15 @@ app.register_blueprint(author_bp, url_prefix='/author')
 app.register_blueprint(tecnique_bp, url_prefix='/tecnique')
 app.register_blueprint(material_bp, url_prefix='/material')
 app.register_blueprint(attraction_bp, url_prefix='/attraction')
+app.register_blueprint(category_bp, url_prefix='/category')
+
+
+
+# Custom 404 error handler
+@app.errorhandler(404)
+def not_found_error(error):
+   return jsonify({"messenge": "Ruta no encontrada."}), 404
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
