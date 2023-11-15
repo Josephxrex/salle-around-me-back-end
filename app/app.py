@@ -52,7 +52,7 @@ app.register_blueprint(category_bp, url_prefix='/category')
 # Custom 404 error handler
 @app.errorhandler(404)
 def not_found_error(error):
-   return jsonify({"messenge": "La ruta no existe daa bobo "}), 404
+   return jsonify({"messenge": "Ruta no encontrada."}), 404
 
 
 if __name__ == '__main__':
