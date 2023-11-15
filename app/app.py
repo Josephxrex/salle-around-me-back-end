@@ -18,19 +18,6 @@ db = SQLAlchemy(app)
 
 # Importa las rutas de usuario
 from routes.user import user_bp
-#Importar la ruta de detalle 
-from routes.detail_attraction import detail_attraction_bp
-#Importar la ruta de coordenadas
-from routes.coordinates import coordinate_bp
-#Importar la ruta de style
-from routes.style import style_bp
-#Importar la ruta de tecnique
-from routes.tecnique import tecnique_bp
-#Importar la ruta de material
-from routes.material import material_bp
-#Importar la ruta de city
-from routes.city import city_bp
-from routes.category import category_bp
 
 # Importa la ruta de style
 from routes.style import style_bp
@@ -46,6 +33,9 @@ from routes.material import material_bp
 
 # Importa la ruta de attraction
 from routes.attraction import attraction_bp
+
+# Importa la ruta de category
+from routes.category import category_bp
 
 
 # Registra las rutas de usuario
