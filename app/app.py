@@ -42,5 +42,11 @@ app.register_blueprint(tecnique_bp, url_prefix='/tecnique')
 app.register_blueprint(material_bp, url_prefix='/material')
 app.register_blueprint(attraction_bp, url_prefix='/attraction')
 
+# Custom 404 error handler
+@app.errorhandler(404)
+def not_found_error(error):
+   return jsonify({"messenge": "La ruta no existe daa bobo "}), 404
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)

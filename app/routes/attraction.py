@@ -8,6 +8,7 @@ from models.category import Category
 from models.author import Author
 from models.style import Style
 from models.user import User
+from geopy.distance import geodesic
 
 
 from middleware.middleware import jwt_required
@@ -691,3 +692,381 @@ def get_attraction_by_id(data, attraction_id):
 
     except Exception as e:
         return jsonify({"error": "Error al obtener la atracción: " + str(e)}), 500
+
+@attraction_bp.route("/GetAllAttractions", methods=["GET"])
+def getallattracctions():
+    """
+    Obtener categorías con sus atracciones
+    ---
+    responses:
+      200:
+        description: Información de categorías con sus atracciones.
+        schema:
+          type: object
+          properties:
+            categories:
+              type: array
+              description: Lista de categorías.
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID de la categoría.
+                  name:
+                    type: string
+                    description: Nombre de la categoría.
+                  attractions:
+                    type: array
+                    description: Lista de atracciones para la categoría.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: ID de la atracción.
+                        name:
+                          type: string
+                          description: Nombre de la atracción.
+                        description:
+                          type: string
+                          description: Descripción de la atracción.
+                        img:
+                          type: string
+                          description: URL de la imagen de la atracción.
+      500:
+        description: Error al obtener la información.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Mensaje de error.
+    """
+    try:
+        categories = Category.query.all()
+
+        categories_info = []
+        for category in categories:
+            category_info = {
+                "id": category.id,
+                "name": category.name,
+                "attractions": []
+            }
+
+            attractions = Attraction.query.filter_by(id_category=category.id).all()
+
+            for attraction in attractions:
+                attraction_info = {
+                    "category_name": category.name,
+                    "id": attraction.id,
+                    "name": attraction.name,
+                    "description": attraction.description,
+                    "img": attraction.img
+                }
+                category_info["attractions"].append(attraction_info)
+
+            categories_info.append(category_info)
+
+        return jsonify(categories_info), 200
+
+    except Exception as e:
+        return jsonify({"error": "Error al obtener la información de categorias por atracciones: " + str(e)}), 500
+    
+@attraction_bp.route("/GetAllCategories", methods=["GET"])
+def get_all_categories():
+    """
+    Obtener todas las categorías
+    ---
+    responses:
+      200:
+        description: Información de todas las categorías para filtrado.
+        schema:
+          type: object
+          properties:
+            categories:
+              type: array
+              description: Lista de categorías.
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID de la categoría.
+                  name:
+                    type: string
+                    description: Nombre de la categoría.
+      500:
+        description: Error al obtener la información.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Mensaje de error.
+    """
+    try:
+        categories = Category.query.all()
+
+        categories_info = []
+        for category in categories:
+            category_info = {
+                "id": category.id,
+                "name": category.name
+            }
+            categories_info.append(category_info)
+
+        return jsonify(categories_info), 200
+
+    except Exception as e:
+        return jsonify({"error": "Error al obtener la información de todas las categorias : " + str(e)}), 500
+    
+@attraction_bp.route("/GetAttractionById/<int:_id>", methods=["GET"])
+def get_attraction_details(_id):
+    """
+    Obtener detalles de una atracción por su ID
+    ---
+    parameters:
+      - name: attraction_id
+        in: path
+        type: integer
+        required: true
+        description: ID de la atracción que se desea obtener detalles.
+    responses:
+      200:
+        description: Detalles de la atracción.
+        schema:
+          type: object
+          properties:
+            id_category:
+              type: integer
+              description: ID de la categoría de la atracción.
+            category_name:
+              type: string
+              description: Nombre de la categoría de la atracción.
+            name:
+              type: string
+              description: Nombre de la atracción.
+            description:
+              type: string
+              description: Descripción de la atracción.
+            author_name:
+              type: string
+              description: Nombre del autor de la atracción.
+            lat:
+              type: number
+              description: Latitud de la atracción.
+            lng:
+              type: number
+              description: Longitud de la atracción.
+            tecnique_name:
+              type: string
+              description: Nombre de la técnica asociada a la atracción.
+            material_name:
+              type: string
+              description: Nombre del material asociado a la atracción.
+            size:
+              type: integer
+              description: Tamaño de la atracción.
+            style_name:
+              type: string
+              description: Nombre del estilo de la atracción.
+            img:
+              type: string
+              description: URL de la imagen de la atracción.
+      404:
+        description: Atracción no encontrada.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Mensaje de error.
+      500:
+        description: Error al obtener los detalles de la atracción.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Mensaje de error.
+    """
+    try:
+        # Obtener la atracción por su ID
+        attraction = Attraction.query.get(_id)
+
+        if attraction is None:
+            return jsonify({"error": "Atracción no encontrada"}), 404
+
+        # Obtener datos relacionados a través de consultas
+        category = Category.query.get(attraction.id_category)
+        author = Author.query.get(attraction.id_author)
+        style = Style.query.get(attraction.id_style)
+        user = User.query.get(attraction.id_user)
+
+        # Consulta de material asociado a la atracción
+        material = DetailMaterial.query.filter_by(attraction_id=attraction.id).first()
+
+        # Consulta de técnica asociada a la atracción
+        tecnique = DetailTecnique.query.filter_by(attraction_id=attraction.id).first()
+
+        # Crear un diccionario para almacenar los detalles de la atracción
+        attraction_details = {
+            "id_category": category.id,
+            "category_name": category.name if category else None,
+            "name": attraction.name,
+            "description": attraction.description,
+            "author_name": author.name if author else None,
+            "lat": attraction.lat,
+            "lng": attraction.lng,
+            "tecnique_name": Tecnique.query.get(tecnique.tecnique_id).name if tecnique else None,
+            "material_name": Material.query.get(material.material_id).name if material else None,
+            "size": attraction.size,
+            "style_name": style.name if style else None,
+            "img": attraction.img,
+        }
+
+        return jsonify(attraction_details), 200
+
+    except Exception as e:
+        return jsonify({"error": "Error al obtener los detalles de la atracción: " + str(e)}), 500
+
+
+@attraction_bp.route("/GetAttractionsByCategory/<_id>", methods=["GET"])
+def get_attractions_by_category(_id):
+    """
+    Obtener atracciones por ID de categoría
+    ---
+    parameters:
+      - name: category_id
+        in: path
+        type: integer
+        required: true
+        description: ID de la categoría de la cual se desean obtener las atracciones.
+    responses:
+      200:
+        description: Lista de atracciones de la categoría.
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              category_name:
+                type: string
+                description: Nombre de la categoría de la atracción.
+              name:
+                type: string
+                description: Nombre de la atracción.
+              description:
+                type: string
+                description: Descripción de la atracción.
+              img:
+                type: string
+                description: URL de la imagen de la atracción.
+      404:
+        description: Categoría no encontrada.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Mensaje de error.
+      500:
+        description: Error al obtener las atracciones de la categoría.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Mensaje de error.
+    """
+    try:
+        # Obtener la categoría por su ID
+        category = Category.query.get(_id)
+
+        if category is None:
+            return jsonify({"error": "Categoría no encontrada"}), 404
+
+        # Obtener todas las atracciones de la categoría
+        attractions = Attraction.query.filter_by(id_category=_id).all()
+
+        # Crear una lista para almacenar la información de las atracciones
+        attractions_info = []
+
+        for attraction in attractions:
+            attraction_info = {
+                "category_name": category.name,
+                "id": attraction.id,
+                "name": attraction.name,
+                "description": attraction.description,
+                "img": attraction.img
+            }
+            attractions_info.append(attraction_info)
+
+        return jsonify(attractions_info), 200
+
+    except Exception as e:
+        return jsonify({"error": "Error al obtener las atracciones de la categoría: " + str(e)}), 500
+    
+# @attraction_bp.route("/GetTopAttracions", methods=["GET"])
+# def get_nearby_attractions():
+#     """
+#     Obtener las 3 atracciones más cercanas a una ubicación
+#     ---
+#     parameters:
+#       - name: lat
+#         in: query
+#         type: number
+#         required: true
+#         description: Latitud de la ubicación.
+#       - name: lng
+#         in: query
+#         type: number
+#         required: true
+#         description: Longitud de la ubicación.
+#     responses:
+#       200:
+#         description: Lista de las 3 atracciones más cercanas.
+#         schema:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               id:
+#                 type: integer
+#                 description: ID de la atracción.
+#               category_name:
+#                 type: string
+#                 description: Nombre de la categoría de la atracción.
+#               name:
+#                 type: string
+#                 description: Nombre de la atracción.
+#               lat:
+#                 type: number
+#                 description: Latitud de la atracción.
+#               lng:
+#                 type: number
+#                 description: Longitud de la atracción.
+#               img:
+#                 type: string
+#                 description: URL de la imagen de la atracción.
+#               within_radius:
+#                 type: boolean
+#                 description: Indica si la atracción está dentro del radio de la atracción más cercana del top tres.
+#       500:
+#         description: Error al obtener las atracciones cercanas.
+#         schema:
+#           type: object
+#           properties:
+#             error:
+#               type: string
+#               description: Mensaje de error.
+#     """
+#     try:
+        
+
+#     except Exception as e:
+#         return jsonify({"error": "Error al obtener las atracciones cercanas: " + str(e)}), 500
+
+
+
