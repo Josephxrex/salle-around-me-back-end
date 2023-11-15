@@ -166,7 +166,7 @@ def get_category(data,id):
         category = Category.query.get(id)
 
         if category:
-            return jsonify({'name': category.name, 'description': category.description})
+            return jsonify({'name': category.name, 'description': category.description}), 200
         else:
             return jsonify({'message': 'Categoría no encontrada'}), 404
 
