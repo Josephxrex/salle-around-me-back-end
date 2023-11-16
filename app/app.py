@@ -37,6 +37,9 @@ from routes.attraction import attraction_bp
 # Importa la ruta de category
 from routes.category import category_bp
 
+# Importa la ruta de mac_address
+from routes.mac_address import mac_address_bp
+
 
 # Registra las rutas de usuario
 app.register_blueprint(user_bp, url_prefix='/user')
@@ -46,6 +49,7 @@ app.register_blueprint(tecnique_bp, url_prefix='/tecnique')
 app.register_blueprint(material_bp, url_prefix='/material')
 app.register_blueprint(attraction_bp, url_prefix='/attraction')
 app.register_blueprint(category_bp, url_prefix='/category')
+app.register_blueprint(mac_address_bp, url_prefix='/mac_address')
 
 
 
