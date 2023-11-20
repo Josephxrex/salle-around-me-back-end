@@ -45,8 +45,6 @@ def create_style(data):
     try:
         data = request.get_json()
         name = data.get('name')
-        create_at = datetime.now()
-
         new_style = Style(name=name, create_at=create_at)
 
         db.session.add(new_style)
@@ -204,7 +202,6 @@ def update_style(data, id):
         if style:
             data = request.get_json()
             style.name = data.get('name')
-            style.update_at = datetime.now()
             db.session.commit()
 
             return jsonify({'message': 'Estilo actualizado exitosamente'}), 200
