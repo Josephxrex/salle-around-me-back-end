@@ -12,7 +12,8 @@ from middleware.middleware import jwt_required
 
 
 @user_bp.route("/", methods=["POST"])
-def registro():
+@jwt_required
+def registro(data):
     """
     Registrar un Nuevo Usuario
     ---
