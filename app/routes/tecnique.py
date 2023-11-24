@@ -100,7 +100,9 @@ def get_tecniques(data):
         for tecnique in tecniques:
             tecnique_data = {
                 'id': tecnique.id,
-                'name': tecnique.name
+                'name': tecnique.name,
+                'create_at': tecnique.create_at,
+                'update_at': tecnique.update_at
             }
             tecniques_list.append(tecnique_data)
 
@@ -154,7 +156,7 @@ def get_tecnique(data, id):
         tecnique = Tecnique.query.get(id)
 
         if tecnique:
-            return jsonify({'name': tecnique.name})
+            return jsonify({'name': tecnique.name, 'create_at': tecnique.create_at, 'update_at': tecnique.update_at})
         else:
             return jsonify({'message': 'Tecnique no encontrado'}), 404
 

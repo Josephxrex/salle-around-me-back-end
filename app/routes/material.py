@@ -100,7 +100,9 @@ def get_materials(data):
         for material in materials:
             material_data = {
                 'id': material.id,
-                'name': material.name
+                'name': material.name,
+                'create_at': material.create_at,
+                'update_at': material.update_at
             }
             materials_list.append(material_data)
 
@@ -154,7 +156,7 @@ def get_material(data, id):
         material = Material.query.get(id)
 
         if material:
-            return jsonify({'name': material.name})
+            return jsonify({'name': material.name, 'create_at': material.create_at, 'update_at': material.update_at})
         else:
             return jsonify({'message': 'Material no encontrado'}), 404
 
