@@ -32,7 +32,7 @@ def create_author(data):
             birthday:
               type: date
               description: Fecha de nacimiento con formato año-mes-dia (1990-12-31).
-            deathday:
+            death:
               type: date
               description: Fecha de defunción con formato año-mes-dia (1990-12-31).
     responses:
@@ -59,14 +59,14 @@ def create_author(data):
         father_lastname = dataJson.get("father_lastname")
         mother_lastname = dataJson.get("mother_lastname")
         birthday = dataJson.get("birthday")
-        deathday = dataJson.get("deathday")
+        death = dataJson.get("death")
 
         new_author = Author(
             name=name,
             father_lastname=father_lastname,
             mother_lastname=mother_lastname,
             birthday=birthday,
-            deathday=deathday,
+            death=death,
         )
 
         db.session.add(new_author)
@@ -113,7 +113,7 @@ def get_authors(data):
               birthday:
                 type: date
                 description: Fecha de nacimiento con formato año-mes-dia (1990-12-31).
-              deathday:
+              death:
                 type: date
                 description: Fecha de defunción con formato año-mes-dia (1990-12-31).
       500:
@@ -135,7 +135,7 @@ def get_authors(data):
                 "father_lastname": author.father_lastname,
                 "mother_lastname": author.mother_lastname,
                 "birthday": author.birthday,
-                "deathday": author.deathday,
+                "death": author.death,
             }
             authors_list.append(author_data)
 
@@ -178,7 +178,7 @@ def get_author_by_id(data, id):
             birthday:
               type: date
               description: Fecha de nacimiento con formato año-mes-dia (1990-12-31).
-            deathday:
+            death:
               type: date
               description: Fecha de defunción con formato año-mes-dia (1990-12-31).
       404:
@@ -208,7 +208,7 @@ def get_author_by_id(data, id):
                     "father_lastname": author.father_lastname,
                     "mother_lastname": author.mother_lastname,
                     "birthday": author.birthday,
-                    "deathday": author.deathday,
+                    "death": author.death,
                 }
             ), 200
         else:
@@ -249,7 +249,7 @@ def update_author(data, id):
             birthday:
                 type: date
                 description: Fecha de nacimiento con formato año-mes-dia (1990-10-1).
-            deathday:
+            death:
                 type: date
                 description: Fecha de defunción con formato año-mes-dia (1990-10-1).
     responses:
@@ -287,7 +287,7 @@ def update_author(data, id):
             author.father_lastname = dataJson.get("father_lastname")
             author.mother_lastname = dataJson.get("mother_lastname")
             author.birthday = dataJson.get("birthday")
-            author.deathday = dataJson.get("deathday")
+            author.death = dataJson.get("death")
 
             db.session.commit()
 
