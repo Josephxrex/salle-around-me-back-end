@@ -144,16 +144,16 @@ def create_attraction(data):
 
         # Agregar materiales y técnicas asociados
         for material in materials:
-            material_id = material.get("id")
+            id_material = material.get("id")
             new_material = DetailMaterial(
-                material_id=material_id, id_attraction=id_attraction
+                id_material=id_material, id_attraction=id_attraction
             )
             db.session.add(new_material)
 
         for tecnica in tecnicas:
-            tecnique_id = tecnica.get("id")
+            id_material = tecnica.get("id")
             new_tecnica = DetailTecnique(
-                tecnique_id=tecnique_id, id_attraction=id_attraction
+                id_material=id_material, id_attraction=id_attraction
             )
             db.session.add(new_tecnica)
 
@@ -297,7 +297,7 @@ def get_all_attractions(data):
 
             for material in materials:
                 # Obtener el nombre del material a partir de su ID
-                material_name = Material.query.get(material.material_id).name
+                material_name = Material.query.get(material.id_material).name
                 material_info = {
                     "material_name": material_name,
                 }
@@ -305,7 +305,7 @@ def get_all_attractions(data):
 
             for tecnica in tecnicas:
                 # Obtener el nombre de la técnica a partir de su ID
-                tecnica_name = Tecnique.query.get(tecnica.tecnique_id).name
+                tecnica_name = Tecnique.query.get(tecnica.id_material).name
                 tecnica_info = {
                     "tecnique_name": tecnica_name,
                 }
@@ -458,16 +458,16 @@ def update_attraction(data, id_attraction):
         tecnicas = dataJson.get("tecnica")
 
         for material in materials:
-            material_id = material.get("id")
+            id_material = material.get("id")
             new_material = DetailMaterial(
-                material_id=material_id, id_attraction=id_attraction
+                id_material=id_material, id_attraction=id_attraction
             )
             db.session.add(new_material)
 
         for tecnica in tecnicas:
-            tecnique_id = tecnica.get("id")
+            id_material = tecnica.get("id")
             new_tecnica = DetailTecnique(
-                tecnique_id=tecnique_id, id_attraction=id_attraction
+                id_material=id_material, id_attraction=id_attraction
             )
             db.session.add(new_tecnica)
 
@@ -675,13 +675,13 @@ def get_attraction_by_id(data, id_attraction):
 
         for material in materials:
             # Obtener el nombre del material a partir de su ID
-            material_name = Material.query.get(material.material_id).name
+            material_name = Material.query.get(material.id_material).name
             material_info = {"material_name": material_name}
             material_data.append(material_info)
 
         for tecnica in tecnicas:
             # Obtener el nombre de la técnica a partir de su ID
-            tecnica_name = Tecnique.query.get(tecnica.tecnique_id).name
+            tecnica_name = Tecnique.query.get(tecnica.id_material).name
             tecnica_info = {"tecnique_name": tecnica_name}
             tecnica_data.append(tecnica_info)
 
@@ -927,8 +927,8 @@ def get_attraction_details(_id):
             "author_name": author.name if author else None,
             "lat": attraction.lat,
             "lng": attraction.lng,
-            "tecnique_name": Tecnique.query.get(tecnique.tecnique_id).name if tecnique else None,
-            "material_name": Material.query.get(material.material_id).name if material else None,
+            "tecnique_name": Tecnique.query.get(tecnique.id_tecnique).name if tecnique else None,
+            "material_name": Material.query.get(material.id_material).name if material else None,
             "size": attraction.size,
             "style_name": style.name if style else None,
             "img": attraction.img,
