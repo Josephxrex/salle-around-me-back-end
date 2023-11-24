@@ -286,7 +286,7 @@ def get_all_attractions(data):
                 attraction_info["categoryname"] = category.name
 
             materials = DetailMaterial.query.filter(
-                DetailMaterial.attraction_id == attraction.id
+                DetailMaterial.id_attraction == attraction.id
             ).all()
             tecnicas = DetailTecnique.query.filter(
                 DetailTecnique.attraction_id == attraction.id
@@ -447,7 +447,7 @@ def update_attraction(data, attraction_id):
 
         # Borrar materiales y técnicas existentes asociados a la atracción
         DetailMaterial.query.filter(
-            DetailMaterial.attraction_id == attraction_id
+            DetailMaterial.id_attraction == attraction_id
         ).delete()
         DetailTecnique.query.filter(
             DetailTecnique.attraction_id == attraction_id
@@ -661,7 +661,7 @@ def get_attraction_by_id(data, attraction_id):
 
         # Consulta de materiales asociados a la atracción
         materials = DetailMaterial.query.filter(
-            DetailMaterial.attraction_id == attraction.id
+            DetailMaterial.id_attraction == attraction.id
         ).all()
 
         # Consulta de técnicas asociadas a la atracción
