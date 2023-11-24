@@ -140,20 +140,20 @@ def create_attraction(data):
         db.session.commit()
 
         # Obtener el ID de la atracción recién creada
-        attraction_id = new_attraction.id
+        id_attraction = new_attraction.id
 
         # Agregar materiales y técnicas asociados
         for material in materials:
             material_id = material.get("id")
             new_material = DetailMaterial(
-                material_id=material_id, attraction_id=attraction_id
+                material_id=material_id, id_attraction=id_attraction
             )
             db.session.add(new_material)
 
         for tecnica in tecnicas:
             tecnique_id = tecnica.get("id")
             new_tecnica = DetailTecnique(
-                tecnique_id=tecnique_id, attraction_id=attraction_id
+                tecnique_id=tecnique_id, id_attraction=id_attraction
             )
             db.session.add(new_tecnica)
 
@@ -289,7 +289,7 @@ def get_all_attractions(data):
                 DetailMaterial.id_attraction == attraction.id
             ).all()
             tecnicas = DetailTecnique.query.filter(
-                DetailTecnique.attraction_id == attraction.id
+                DetailTecnique.id_attraction == attraction.id
             ).all()
 
             material_data = []
@@ -322,14 +322,14 @@ def get_all_attractions(data):
         return jsonify({"error": "Error al obtener las atracciones: " + str(e)}), 500
 
 
-@attraction_bp.route("/<int:attraction_id>", methods=["PUT"])
+@attraction_bp.route("/<int:id_attraction>", methods=["PUT"])
 @jwt_required
-def update_attraction(data, attraction_id):
+def update_attraction(data, id_attraction):
     """
     Actualizar una atracción por su ID
     ---
     parameters:
-      - name: attraction_id
+      - name: id_attraction
         in: path
         type: integer
         required: true
@@ -425,7 +425,7 @@ def update_attraction(data, attraction_id):
               description: Mensaje de error."""
     try:
         # Obtener la atracción existente por su ID
-        existing_attraction = Attraction.query.get(attraction_id)
+        existing_attraction = Attraction.query.get(id_attraction)
 
         if existing_attraction is None:
             return jsonify({"error": "Atracción no encontrada"}), 404
@@ -447,10 +447,10 @@ def update_attraction(data, attraction_id):
 
         # Borrar materiales y técnicas existentes asociados a la atracción
         DetailMaterial.query.filter(
-            DetailMaterial.id_attraction == attraction_id
+            DetailMaterial.id_attraction == id_attraction
         ).delete()
         DetailTecnique.query.filter(
-            DetailTecnique.attraction_id == attraction_id
+            DetailTecnique.id_attraction == id_attraction
         ).delete()
 
         # Agregar materiales y técnicas asociados a la atracción
@@ -460,14 +460,14 @@ def update_attraction(data, attraction_id):
         for material in materials:
             material_id = material.get("id")
             new_material = DetailMaterial(
-                material_id=material_id, attraction_id=attraction_id
+                material_id=material_id, id_attraction=id_attraction
             )
             db.session.add(new_material)
 
         for tecnica in tecnicas:
             tecnique_id = tecnica.get("id")
             new_tecnica = DetailTecnique(
-                tecnique_id=tecnique_id, attraction_id=attraction_id
+                tecnique_id=tecnique_id, id_attraction=id_attraction
             )
             db.session.add(new_tecnica)
 
@@ -480,14 +480,14 @@ def update_attraction(data, attraction_id):
         return jsonify({"error": "Error al actualizar la atracción: " + str(e)}), 500
 
 
-@attraction_bp.route("/<int:attraction_id>", methods=["DELETE"])
+@attraction_bp.route("/<int:id_attraction>", methods=["DELETE"])
 @jwt_required
-def delete_attraction(data, attraction_id):
+def delete_attraction(data, id_attraction):
     """
     Eliminar una atracción por su ID (Borrado lógico)
     ---
     parameters:
-      - name: attraction_id
+      - name: id_attraction
         in: path
         type: integer
         required: true
@@ -519,7 +519,7 @@ def delete_attraction(data, attraction_id):
               description: Mensaje de error."""
     try:
         # Obtener la atracción existente por su ID
-        existing_attraction = Attraction.query.get(attraction_id)
+        existing_attraction = Attraction.query.get(id_attraction)
 
         if existing_attraction is None:
             return jsonify({"error": "Atracción no encontrada"}), 404
@@ -535,14 +535,14 @@ def delete_attraction(data, attraction_id):
         return jsonify({"error": "Error al eliminar la atracción: " + str(e)}), 500
 
 
-@attraction_bp.route("/<int:attraction_id>", methods=["GET"])
+@attraction_bp.route("/<int:id_attraction>", methods=["GET"])
 @jwt_required
-def get_attraction_by_id(data, attraction_id):
+def get_attraction_by_id(data, id_attraction):
     """
     Obtener una atracción por su ID
     ---
     parameters:
-      - name: attraction_id
+      - name: id_attraction
         in: path
         type: integer
         required: true
@@ -626,7 +626,7 @@ def get_attraction_by_id(data, attraction_id):
               description: Mensaje de error."""
     try:
         # Obtener la atracción por su ID
-        attraction = Attraction.query.get(attraction_id)
+        attraction = Attraction.query.get(id_attraction)
 
         if attraction is None:
             return jsonify({"error": "Atracción no encontrada"}), 404
@@ -666,7 +666,7 @@ def get_attraction_by_id(data, attraction_id):
 
         # Consulta de técnicas asociadas a la atracción
         tecnicas = DetailTecnique.query.filter(
-            DetailTecnique.attraction_id == attraction.id
+            DetailTecnique.id_attraction == attraction.id
         ).all()
 
         # Crear listas para almacenar nombres de materiales y técnicas
@@ -835,7 +835,7 @@ def get_attraction_details(_id):
     Obtener detalles de una atracción por su ID
     ---
     parameters:
-      - name: attraction_id
+      - name: id_attraction
         in: path
         type: integer
         required: true
@@ -913,10 +913,10 @@ def get_attraction_details(_id):
         user = User.query.get(attraction.id_user)
 
         # Consulta de material asociado a la atracción
-        material = DetailMaterial.query.filter_by(attraction_id=attraction.id).first()
+        material = DetailMaterial.query.filter_by(id_attraction=attraction.id).first()
 
         # Consulta de técnica asociada a la atracción
-        tecnique = DetailTecnique.query.filter_by(attraction_id=attraction.id).first()
+        tecnique = DetailTecnique.query.filter_by(id_attraction=attraction.id).first()
 
         # Crear un diccionario para almacenar los detalles de la atracción
         attraction_details = {
