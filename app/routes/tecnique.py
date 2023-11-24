@@ -117,7 +117,7 @@ def get_tecnique(data, id):
             Obtener un Tecnique por su ID
             ---
             parameters:
-              - name: Tecnique_id
+              - name: id_material
                 in: path
                 type: integer
                 required: true
@@ -169,7 +169,7 @@ def update_tecnique(data, id):
             Actualizar un Tecnique por su ID
             ---
             parameters:
-              - name: Tecnique_id
+              - name: id_material
                 in: path
                 type: integer
                 required: true
@@ -234,7 +234,7 @@ def delete_tecnique(data, id):
             Eliminar un Tecnique por su ID (Borrado lógico)
             ---
             parameters:
-              - name: Tecnique_id
+              - name: id_material
                 in: path
                 type: integer
                 required: true

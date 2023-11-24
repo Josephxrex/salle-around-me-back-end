@@ -117,7 +117,7 @@ def get_material(data, id):
         Obtener un Material por su ID
         ---
         parameters:
-          - name: material_id
+          - name: id_material
             in: path
             type: integer
             required: true
@@ -169,7 +169,7 @@ def update_material(data, id):
         Actualizar un Material por su ID
         ---
         parameters:
-          - name: material_id
+          - name: id_material
             in: path
             type: integer
             required: true
@@ -234,7 +234,7 @@ def delete_material(data, id):
         Eliminar un Material por su ID (Borrado lógico)
         ---
         parameters:
-          - name: material_id
+          - name: id_material
             in: path
             type: integer
             required: true
