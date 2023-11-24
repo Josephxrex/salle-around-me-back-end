@@ -1004,69 +1004,108 @@ def get_attractions_by_category(_id):
             attractions_info.append(attraction_info)
 
         return jsonify(attractions_info), 200
-
     except Exception as e:
         return jsonify({"error": "Error al obtener las atracciones de la categoría: " + str(e)}), 500
     
-# @attraction_bp.route("/GetTopAttracions", methods=["GET"])
-# def get_nearby_attractions():
-#     """
-#     Obtener las 3 atracciones más cercanas a una ubicación
-#     ---
-#     parameters:
-#       - name: lat
-#         in: query
-#         type: number
-#         required: true
-#         description: Latitud de la ubicación.
-#       - name: lng
-#         in: query
-#         type: number
-#         required: true
-#         description: Longitud de la ubicación.
-#     responses:
-#       200:
-#         description: Lista de las 3 atracciones más cercanas.
-#         schema:
-#           type: array
-#           items:
-#             type: object
-#             properties:
-#               id:
-#                 type: integer
-#                 description: ID de la atracción.
-#               category_name:
-#                 type: string
-#                 description: Nombre de la categoría de la atracción.
-#               name:
-#                 type: string
-#                 description: Nombre de la atracción.
-#               lat:
-#                 type: number
-#                 description: Latitud de la atracción.
-#               lng:
-#                 type: number
-#                 description: Longitud de la atracción.
-#               img:
-#                 type: string
-#                 description: URL de la imagen de la atracción.
-#               within_radius:
-#                 type: boolean
-#                 description: Indica si la atracción está dentro del radio de la atracción más cercana del top tres.
-#       500:
-#         description: Error al obtener las atracciones cercanas.
-#         schema:
-#           type: object
-#           properties:
-#             error:
-#               type: string
-#               description: Mensaje de error.
-#     """
-#     try:
+@attraction_bp.route("/GetTopAttracions/<string:lat>/<string:lng>", methods=["GET"])
+def get_nearby_attractions(lat,lng):
+    """
+    Get Top Attractions based on provided latitude and longitude.
+    ---
+    parameters:
+      - name: lat
+        in: path
+        type: string
+        required: true
+        description: Latitude of the user's location.
+      - name: lng
+        in: path
+        type: string
+        required: true
+        description: Longitude of the user's location.
+    responses:
+      200:
+        description: Top 3 attractions closest to the provided coordinates.
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: ID of the attraction.
+              name:
+                type: string
+                description: Name of the attraction.
+              lat:
+                type: number
+                description: Latitude of the attraction.
+              lng:
+                type: number
+                description: Longitude of the attraction.
+              description:
+                type: string
+                description: Description of the attraction.
+              img:
+                type: string
+                description: URL of the attraction's image.
+              size:
+                type: integer
+                description: Size of the attraction.
+              distance:
+                type: number
+                description: Distance from the user's coordinates.
+      400:
+        description: Invalid latitude or longitude provided.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Error message.
+      500:
+        description: Error encountered while fetching attractions.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Error message.
+    """
+    try:
+      lat_float = float(lat)
+      lng_float = float(lng)
+      print("try")
+      Atractions =  Attraction.query.filter(Attraction.is_delete == 0).all()
+      print("done")
+      points = []
+      for attraction in Atractions:
+        points.append({
+                "id": attraction.id,
+                "name": attraction.name,
+                "lat": attraction.lat,
+                "lng": attraction.lng,
+                "description": attraction.description,
+                "img": attraction.img,
+                "size": attraction.size,
+                "distance": 0
+            })
+        
+      user_coords = (lat_float,lng_float)
+      close_points = []
+      for point in points :
+        try:
+          point["distance"] = geodesic(user_coords, (point['lat'],point['lng'])).kilometers
+          if point["distance"]  <= 6:
+            close_points.append(point)
+        except Exception as ex:
+          print("la atracción {} se registro de forma incorrecta".format(point['name']))
+      ordered_points=sorted(close_points, key=lambda x: x['distance'])
+      return jsonify(ordered_points[:3])
         
 
-#     except Exception as e:
-#         return jsonify({"error": "Error al obtener las atracciones cercanas: " + str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Error al obtener las atracciones cercanas: " + str(e)}), 500
 
 
 
