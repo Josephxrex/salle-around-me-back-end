@@ -9,3 +9,4 @@ PyJWT
 flasgger
 markupsafe
 geopy
+flask-cors

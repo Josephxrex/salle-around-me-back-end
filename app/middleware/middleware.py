@@ -2,11 +2,13 @@ from flask import request, jsonify
 from app import app
 import jwt
 from functools import wraps
+from flask_cors import CORS, cross_origin
 from decouple import config 
 
 SECRET_KEY = config('SECRET_KEY')
 
 def jwt_required(f):
+    @cross_origin()
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization')
