@@ -203,6 +203,9 @@ def login():
             token:
               type: string
               description: Token JWT de autenticación.
+            email:
+              type: string
+              description: El mismo email que me estan mandando.
 
       401:
         description: Credenciales inválidas.
@@ -229,6 +232,7 @@ def login():
                 "user_id": user.id,
                 "name": user.name,
                 "token": token,
+                "email":email
             }
         )
     else:
