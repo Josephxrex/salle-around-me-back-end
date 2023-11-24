@@ -728,6 +728,12 @@ def getallattracctions():
                         name:
                           type: string
                           description: Nombre de la atracción.
+                        lat:
+                          type: number
+                          description: Latitud de la ubicacion.
+                        lng:
+                          type: number
+                          description: Longitud de la ubicacion.
                         description:
                           type: string
                           description: Descripción de la atracción.
@@ -761,6 +767,8 @@ def getallattracctions():
                     "category_name": category.name,
                     "id": attraction.id,
                     "name": attraction.name,
+                    "lat": attraction.lat,
+                    "lng": attraction.lng,
                     "description": attraction.description,
                     "img": attraction.img
                 }
@@ -957,6 +965,12 @@ def get_attractions_by_category(_id):
               name:
                 type: string
                 description: Nombre de la atracción.
+              lat:
+                type: number
+                description: Latitud de la ubicacion.
+              lng:
+                type: number
+                description: Longitud de la ubicacion.
               description:
                 type: string
                 description: Descripción de la atracción.
@@ -998,6 +1012,8 @@ def get_attractions_by_category(_id):
                 "category_name": category.name,
                 "id": attraction.id,
                 "name": attraction.name,
+                "lat": attraction.lat,
+                "lng": attraction.lng,
                 "description": attraction.description,
                 "img": attraction.img
             }
