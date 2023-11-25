@@ -45,7 +45,7 @@ def create_style(data):
     try:
         data = request.get_json()
         name = data.get('name')
-        new_style = Style(name=name, create_at=create_at)
+        new_style = Style(name=name)
 
         db.session.add(new_style)
         db.session.commit()
