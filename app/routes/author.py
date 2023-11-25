@@ -125,7 +125,7 @@ def get_authors(data):
               type: string
               description: Mensaje de error."""
     try:
-        authors = Author.query.all()
+        authors = Author.query.filter(Author.is_delete == 0).all()
         authors_list = []
 
         for author in authors:
