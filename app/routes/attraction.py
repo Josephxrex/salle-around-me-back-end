@@ -966,6 +966,9 @@ def get_attractions_by_category(_id):
               name:
                 type: string
                 description: Nombre de la atracción.
+              size:
+                type: number
+                description: Dimension de la atraccion.
               lat:
                 type: number
                 description: Latitud de la ubicacion.
@@ -1013,10 +1016,12 @@ def get_attractions_by_category(_id):
                 "category_name": category.name,
                 "id": attraction.id,
                 "name": attraction.name,
+                "size": attraction.size,
                 "lat": attraction.lat,
                 "lng": attraction.lng,
                 "description": attraction.description,
                 "img": attraction.img
+                
             }
             attractions_info.append(attraction_info)
 
