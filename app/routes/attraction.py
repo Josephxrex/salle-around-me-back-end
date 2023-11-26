@@ -151,9 +151,9 @@ def create_attraction(data):
             db.session.add(new_material)
 
         for tecnica in tecnicas:
-            id_material = tecnica.get("id")
+            id_tecnique = tecnica.get("id")
             new_tecnica = DetailTecnique(
-                id_material=id_material, id_attraction=id_attraction
+                id_tecnique=id_tecnique, id_attraction=id_attraction
             )
             db.session.add(new_tecnica)
 
