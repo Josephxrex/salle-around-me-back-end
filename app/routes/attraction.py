@@ -305,7 +305,7 @@ def get_all_attractions(data):
 
             for tecnica in tecnicas:
                 # Obtener el nombre de la técnica a partir de su ID
-                tecnica_name = Tecnique.query.get(tecnica.id_material).name
+                tecnica_name = Tecnique.query.get(tecnica.id_tecnique).name
                 tecnica_info = {
                     "tecnique_name": tecnica_name,
                 }
