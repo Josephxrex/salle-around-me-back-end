@@ -212,36 +212,60 @@ def get_all_attractions(data):
               size:
                 type: integer
                 description: Tamaño de la atracción.
-              authorName:
-                type: string
-                description: Nombre del autor de la atracción.
-              styleName:
-                type: string
-                description: Nombre del estilo de la atracción.
+              author:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    description: identificador.
+                  name:
+                    type: string
+                    description: nombre del elemento.
+              style:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    description: identificador.
+                  name:
+                    type: string
+                    description: nombre del elemento.
               userName:
                 type: string
                 description: Nombre del usuario de la atracción.
-              categoryname:
-                type: string
-                description: Nombre de la categoría de la atracción.
+              category:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    description: identificador.
+                  name:
+                    type: string
+                    description: nombre del elemento.
               materials:
                 type: array
                 description: Lista de materiales de la atracción.
                 items:
                   type: object
                   properties:
-                    material_name:
+                    id:
+                      type: number
+                      description: identificador.
+                    name:
                       type: string
-                      description: Nombre del material.
+                      description: nombre del elemento.
               tecnicas:
                 type: array
                 description: Lista de técnicas de la atracción.
                 items:
                   type: object
                   properties:
-                    tecnique_name:
+                    id:
+                      type: number
+                      description: identificador.
+                    name:
                       type: string
-                      description: Nombre de la técnica.
+                      description: nombre del elemento.
       500:
         description: Error al obtener las atracciones.
         schema:
@@ -271,11 +295,16 @@ def get_all_attractions(data):
 
             author = Author.query.get(attraction.id_author)
             if author:
-                attraction_info["authorName"] = author.name
+                attraction_info["author"] = {
+                  "id":author.id,
+                  "name":author.name}
 
             style = Style.query.get(attraction.id_style)
             if style:
-                attraction_info["styleName"] = style.name
+                attraction_info["style"] = {
+                  "id":style.id,
+                  "name":style.name
+                  }
 
             user = User.query.get(attraction.id_user)
             if user:
@@ -283,7 +312,10 @@ def get_all_attractions(data):
 
             category = Category.query.get(attraction.id_category)
             if category:
-                attraction_info["categoryname"] = category.name
+                attraction_info["category"] = {
+                  "id":category.id,
+                  "name":category.name
+                  }
 
             materials = DetailMaterial.query.filter(
                 DetailMaterial.id_attraction == attraction.id
@@ -297,17 +329,19 @@ def get_all_attractions(data):
 
             for material in materials:
                 # Obtener el nombre del material a partir de su ID
-                material_name = Material.query.get(material.id_material).name
+                material = Material.query.get(material.id_material)
                 material_info = {
-                    "material_name": material_name,
+                    "id": material.id,
+                    "material_name": material.name,
                 }
                 material_data.append(material_info)
 
             for tecnica in tecnicas:
                 # Obtener el nombre de la técnica a partir de su ID
-                tecnica_name = Tecnique.query.get(tecnica.id_tecnique).name
+                tecnica = Tecnique.query.get(tecnica.id_tecnique)
                 tecnica_info = {
-                    "tecnique_name": tecnica_name,
+                    "id": tecnica.id,
+                    "tecnique_name": tecnica.name,
                 }
                 tecnica_data.append(tecnica_info)
 
