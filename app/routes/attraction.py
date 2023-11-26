@@ -750,7 +750,7 @@ def getallattracctions():
               description: Mensaje de error.
     """
     try:
-        categories = Category.query.all()
+        categories = Category.query.filter(Category.is_delete == 0).all()
 
         categories_info = []
         for category in categories:
@@ -760,7 +760,7 @@ def getallattracctions():
                 "attractions": []
             }
 
-            attractions = Attraction.query.filter_by(id_category=category.id).all()
+            attractions = Attraction.query.filter_by(id_category=category.id).filter(Attraction.is_delete == 0).all()
 
             for attraction in attractions:
                 attraction_info = {
@@ -814,7 +814,7 @@ def get_all_categories():
               description: Mensaje de error.
     """
     try:
-        categories = Category.query.all()
+        categories = Category.query.filter(Category.is_delete == 0).all()
 
         categories_info = []
         for category in categories:
@@ -1006,7 +1006,7 @@ def get_attractions_by_category(_id):
             return jsonify({"error": "Categoría no encontrada"}), 404
 
         # Obtener todas las atracciones de la categoría
-        attractions = Attraction.query.filter_by(id_category=_id).all()
+        attractions = Attraction.query.filter_by(id_category=_id).filter(Attraction.is_delete == 0).all()
 
         # Crear una lista para almacenar la información de las atracciones
         attractions_info = []
