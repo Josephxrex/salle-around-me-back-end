@@ -820,7 +820,8 @@ def get_all_categories():
         for category in categories:
             category_info = {
                 "id": category.id,
-                "name": category.name
+                "name": category.name,
+                "description":category.description
             }
             categories_info.append(category_info)
 
