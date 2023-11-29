@@ -499,9 +499,9 @@ def update_attraction(data, id_attraction):
             db.session.add(new_material)
 
         for tecnica in tecnicas:
-            id_material = tecnica.get("id")
+            id_tecnique = tecnica.get("id")
             new_tecnica = DetailTecnique(
-                id_material=id_material, id_attraction=id_attraction
+                id_tecnique=id_tecnique, id_attraction=id_attraction
             )
             db.session.add(new_tecnica)
 
@@ -1066,7 +1066,7 @@ def get_attractions_by_category(_id):
 @attraction_bp.route("/GetAttractionsByCategoryFull/<_id>", methods=["GET"])
 def get_attractions_by_category_full(_id):
     """
-    Obtener atracciones por ID de categoría
+    Obtener atracciones completas por ID de categoría
     ---
     parameters:
       - name: category_id
