@@ -337,6 +337,66 @@ def get_user_by_id(data, user_id):
         return jsonify({"error": "Error al obtener el usuario: " + str(e)}), 500
 
 
+@user_bp.route("/<int:user_id>", methods=["DELETE"])
+@jwt_required
+def delete_user(data, user_id):
+    """
+    Eliminar un Usuario
+    ---
+    parameters:
+      - name: user_id
+        in: path
+        type: integer
+        required: true
+        description: ID del usuario a eliminar.
+
+    responses:
+      200:
+        description: Eliminación exitosa.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de éxito.
+
+      401:
+        description: Acceso no autorizado.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de error.
+
+      404:
+        description: Usuario no encontrado.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensaje de error.
+    """
+    try:
+        # Verifica si el usuario existe
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({"message": "Usuario no encontrado"}), 404
+
+        if user.id == 1:
+            return jsonify({"message": "No se permite eliminar al admin"}), 403
+        # Cambia el estado is_delete a True en lugar de borrar el usuario
+        user.is_delete = True
+        db.session.commit()
+
+        return jsonify({"message": "Usuario eliminado exitosamente"})
+
+    except Exception as e:
+        return jsonify({"error": "Error al eliminar el usuario: " + str(e)}), 500
+
+
 def generate_token(email):
     payload = {"email": email}
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
