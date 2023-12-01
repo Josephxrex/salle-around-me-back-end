@@ -386,7 +386,7 @@ def delete_user(data, user_id):
             return jsonify({"message": "Usuario no encontrado"}), 404
 
         if user.id == 1:
-            return jsonify({"message": "No se permite eliminar al admin"}), 403
+            return jsonify({"message": "No se permite modificar al usuario admin"}), 403
         # Cambia el estado is_delete a True en lugar de borrar el usuario
         user.is_delete = True
         db.session.commit()
